@@ -34,13 +34,13 @@ def cannon(l,possissao, radio, arfa):
 	vid=(vii[0]+l*cos(arfa), vii[1]+l*sin(-arfa))
 	return [vsi,vii,vid,vsd]
 
-def euler(f, v0, h):
-    return v0+f(v0)*h
+def euler(f, v0, x0, h):
+    return v0+f(x0, v0)*h
 
-f = lambda x: -g
+f = lambda x, v: -g
 
 def trallecto(f, x0, v0, h):
-    v = euler(f,v0,h)
+    v = euler(f,v0,x0,h)
     x = x0+v*h
     return x, v
 
