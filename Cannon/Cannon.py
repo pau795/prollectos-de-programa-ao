@@ -19,8 +19,13 @@ radio = 15
 angulo=0
 desfase=0
 
+g = 9.807
 clock = pygame.time.Clock()
 
+# Parametros guarros
+x0 = 100
+v0 = 0
+h = 1/60
 
 def cannon(l,possissao, radio, arfa):
 	vsi= (possissao[0]+radio*cos((3*pi/4)-arfa),possissao[1]+radio*sin((3*pi/4)-arfa))
@@ -29,8 +34,23 @@ def cannon(l,possissao, radio, arfa):
 	vid=(vii[0]+l*cos(arfa), vii[1]+l*sin(-arfa))
 	return [vsi,vii,vid,vsd]
 
+def euler(f, v0, h):
+    return v0+f(v0)*h
 
+f = lambda x: -g
 
+def trallecto(f, x0, v0, h):
+    v = euler(f,v0,h)
+    x = x0+v*h
+    return x, v
+
+for i in range(100):
+    x, y = trallecto(f,x0,v0,h)
+    x0 = x
+    v0 = y
+    print(x, y)
+    
+    
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("LOL")
