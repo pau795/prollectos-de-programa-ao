@@ -1,5 +1,4 @@
 import sys, pygame
-from pygame.locals import *
 from math import cos, sin, pi
  
 
@@ -17,7 +16,10 @@ ancho_cannon= 20
 
 centro = (35,475)
 radio = 15
-angulo=(pi)
+angulo=0
+desfase=0
+
+clock = pygame.time.Clock()
 
 
 def cannon(l,possissao, radio, arfa):
@@ -28,26 +30,33 @@ def cannon(l,possissao, radio, arfa):
 	return [vsi,vii,vid,vsd]
 
 
-def main():
-	screen = pygame.display.set_mode((WIDTH, HEIGHT))
-	pygame.display.set_caption("LOL")
-	finished = False
-	while not finished:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				finished = True
-				
-		screen.fill(cyan)
-		screen.fill(green, rect=[0,500,800,100])
-		screen.fill(brown, rect=[20,480,50,20])
-		pygame.draw.circle(screen, black,centro, radio, 0)
-		pygame.draw.polygon(screen, black, cannon(longitud_cannon, centro, radio, angulo),0)
-		pygame.display.update()
+
+pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("LOL")
+finished = False
+while not finished:
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			finished = True
+		if event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_UP:
+				desfase = (pi/180)
+			if event.key == pygame.K_DOWN:
+				desfase = -(pi/180)
+		if event.type == pygame.KEYUP:
+			if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
+				desfase = 0		
+		
+	if desfase < 0 and angulo > 0 or desfase > 0 and angulo < (pi/2): angulo+=desfase
+	screen.fill(cyan)
+	screen.fill(green, rect=[0,500,800,100])
+	screen.fill(brown, rect=[20,480,50,20])
+	pygame.draw.circle(screen, black,centro, radio, 0)
+	pygame.draw.polygon(screen, black, cannon(longitud_cannon, centro, radio, angulo),0)
+	pygame.display.update()
+	clock.tick(60)
 	
-	pygame.quit()
-	quit()
-	return 0
+pygame.quit()
+quit()
  
-if __name__ == '__main__':
-    pygame.init()
-    main()
