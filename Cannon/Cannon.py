@@ -18,6 +18,9 @@ centro = (20+radio,int(500-1.5*radio))
 angulo=0
 desfase=0
 longitud_cannon= 5*radio
+velosidat=50
+incremento_velocidad=0
+
 
 def cannon(l,possissao, radio, arfa):
 	vsi= (possissao[0]+radio*cos((3*pi/4)-arfa),possissao[1]+radio*sin((3*pi/4)-arfa))
@@ -31,6 +34,17 @@ def divuja_cannon():
 	pygame.draw.circle(screen, black,centro, radio, 0)
 	pygame.draw.polygon(screen, black, cannon(longitud_cannon, centro, radio, angulo),0)
 
+	
+def divuja_barra():
+	pygame.draw.line(screen, black, (20, 550), (220, 550), 3)
+	pygame.draw.line(screen, black, (20, 540), (20, 560), 3)
+	pygame.draw.line(screen, black, (220, 540), (220, 560), 3)
+	pygame.draw.line(screen, black, (70, 545), (70, 555), 2)
+	pygame.draw.line(screen, black, (120, 545), (120, 555), 2)
+	pygame.draw.line(screen, black, (170, 545), (170, 555), 2)
+	print(velosidat)
+	pygame.draw.line(screen, red, (2*velosidat+20, 540), (2*velosidat+20, 560), 3)
+	
 #reloj
 clock = pygame.time.Clock()
 fps=60
@@ -62,25 +76,28 @@ for i in range(100):
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("LOL")
+icon=pygame.image.load("cannon.png")
+pygame.display.set_icon(icon)
+pygame.display.set_caption("Cannon")
 finished = False
 while not finished:
 	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			finished = True
+		if event.type == pygame.QUIT: finished = True
 		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_UP:
-				desfase = (pi/180)
-			if event.key == pygame.K_DOWN:
-				desfase = -(pi/180)
+			if event.key == pygame.K_UP: desfase = (pi/180)
+			if event.key == pygame.K_DOWN: desfase = -(pi/180)
+			if event.key == pygame.K_RIGHT: incremento_velocidad = 1
+			if event.key == pygame.K_LEFT: incremento_velocidad = -1
 		if event.type == pygame.KEYUP:
-			if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
-				desfase = 0		
+			if event.key == pygame.K_DOWN or event.key == pygame.K_UP: desfase = 0
+			if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT: incremento_velocidad = 0				
 		
 	if desfase < 0 and angulo > 0 or desfase > 0 and angulo < (pi/2): angulo+=desfase
+	if incremento_velocidad < 0 and velosidat+incremento_velocidad >= 0 or incremento_velocidad > 0 and velosidat+incremento_velocidad <= 100: velosidat+=incremento_velocidad
 	screen.fill(cyan)
 	screen.fill(green, rect=[0,500,800,100])
 	divuja_cannon()
+	divuja_barra()
 	pygame.display.update()
 	clock.tick(fps)
 	
