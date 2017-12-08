@@ -12,9 +12,14 @@ green = (0,255,0)
 brown = (133,87,35)
 black = (0,0,0)
 
+#medidas
+ancho_suelo =int(HEIGHT/6)
+inicio_suelo = HEIGHT-ancho_suelo
+margen=int(WIDTH/40)
+
 #cannon en si, incongoscible
-radio = 20
-centro = (20+radio,int(500-1.5*radio))
+radio = margen
+centro = (margen+radio,int(inicio_suelo-1.5*radio))
 angulo=0
 desfase=0
 longitud_cannon= 5*radio
@@ -36,14 +41,35 @@ def divuja_cannon():
 
 	
 def divuja_barra():
-	pygame.draw.line(screen, black, (20, 550), (220, 550), 3)
-	pygame.draw.line(screen, black, (20, 540), (20, 560), 3)
-	pygame.draw.line(screen, black, (220, 540), (220, 560), 3)
-	pygame.draw.line(screen, black, (70, 545), (70, 555), 2)
-	pygame.draw.line(screen, black, (120, 545), (120, 555), 2)
-	pygame.draw.line(screen, black, (170, 545), (170, 555), 2)
-	pygame.draw.line(screen, red, (2*velosidat+20, 540), (2*velosidat+20, 560), 3)
+	centro = inicio_suelo + ancho_suelo/2
+	l = WIDTH/4
+	m=margen
+	g=ancho_suelo/10
+	p=g/2
 	
+	pygame.draw.line(screen, black, (m, centro), (m+l, centro), 3) #linea horizontal
+	pygame.draw.line(screen, black, (m, centro-g), (m, centro+g), 3) #linea vertical izq
+	pygame.draw.line(screen, black, (m+l, centro-g), (m+l, centro+g), 3) #linea vertical der
+	pygame.draw.line(screen, black, (m+l/4, centro-p), (m+l/4,centro+p ), 2) #separador vertical izq
+	pygame.draw.line(screen, black, (m+l/2, centro-p), (m+l/2, centro+p), 2) #separador vertical centr
+	pygame.draw.line(screen, black, (m+l*3/4, centro-p), (m+l*3/4, centro+p), 2) #separador vertical der
+	pygame.draw.line(screen, red, (l/100*velosidat+margen, centro-g), (l/100*velosidat+margen, centro+g), 3)
+	ti1 =  font.render('0', False, (0, 0, 0))
+	ti2 =  font.render('100', False, (0, 0, 0))
+	screen.blit(ti1,(g+p, centro+g))
+	screen.blit(ti2,(l, centro+g))
+	
+def divuja_fondo():
+	screen.fill(cyan)
+	screen.fill(green, rect=[0,inicio_suelo,WIDTH,ancho_suelo])
+	
+def escrive_testo():
+	tangulo = font.render('ANGÚLO '+str(int(angulo*180/pi))+'°', False, (0, 0, 0))
+	tevelosidat = font.render(str('VELOSIDAT '+str(int(velosidat))), False, (0, 0, 0))
+	screen.blit(tangulo,(int(margen/2),int(margen/2)))
+	screen.blit(tevelosidat,(int(margen/2),2*margen))
+
+
 #reloj
 clock = pygame.time.Clock()
 fps=60
@@ -75,7 +101,7 @@ for i in range(100):
 
 pygame.init()
 pygame.font.init()
-font = pygame.font.SysFont('Papyrus', 20)
+font = pygame.font.SysFont('Papyrus', int(margen))
 font.set_bold(True)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 try:
@@ -100,14 +126,10 @@ while not finished:
 	elif desfase < 0 and angulo+desfase < 0: angulo = 0
 	else: angulo+=desfase
 	if incremento_velocidad < 0 and velosidat+incremento_velocidad >= 0 or incremento_velocidad > 0 and velosidat+incremento_velocidad <= 100: velosidat+=incremento_velocidad
-	tangulo = font.render('ANGÚLO '+str(int(angulo*180/pi))+'°', False, (0, 0, 0))
-	tevelosidat = font.render(str('VELOSIDAT '+str(velosidat)), False, (0, 0, 0))
-	screen.fill(cyan)
-	screen.fill(green, rect=[0,500,800,100])
+	divuja_fondo()
+	escrive_testo()
 	divuja_cannon()
 	divuja_barra()
-	screen.blit(tangulo,(10,10))
-	screen.blit(tevelosidat,(10,40))
 	pygame.display.update()
 	clock.tick(fps)
 	
