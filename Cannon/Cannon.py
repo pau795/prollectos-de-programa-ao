@@ -42,7 +42,6 @@ def divuja_barra():
 	pygame.draw.line(screen, black, (70, 545), (70, 555), 2)
 	pygame.draw.line(screen, black, (120, 545), (120, 555), 2)
 	pygame.draw.line(screen, black, (170, 545), (170, 555), 2)
-	print(velosidat)
 	pygame.draw.line(screen, red, (2*velosidat+20, 540), (2*velosidat+20, 560), 3)
 	
 #reloj
@@ -75,9 +74,14 @@ for i in range(100):
 """
 
 pygame.init()
+pygame.font.init()
+font = pygame.font.SysFont('Papyrus', 20)
+font.set_bold(True)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-icon=pygame.image.load("cannon.png")
-pygame.display.set_icon(icon)
+try:
+	icon=pygame.image.load("cannon.png")
+	pygame.display.set_icon(icon)
+except: print("icono no enctrado :(")
 pygame.display.set_caption("Cannon")
 finished = False
 while not finished:
@@ -92,12 +96,18 @@ while not finished:
 			if event.key == pygame.K_DOWN or event.key == pygame.K_UP: desfase = 0
 			if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT: incremento_velocidad = 0				
 		
-	if desfase < 0 and angulo > 0 or desfase > 0 and angulo < (pi/2): angulo+=desfase
+	if desfase > 0 and angulo+desfase > pi/2: angulo = pi/2
+	elif desfase < 0 and angulo+desfase < 0: angulo = 0
+	else: angulo+=desfase
 	if incremento_velocidad < 0 and velosidat+incremento_velocidad >= 0 or incremento_velocidad > 0 and velosidat+incremento_velocidad <= 100: velosidat+=incremento_velocidad
+	tangulo = font.render('ANGÚLO '+str(int(angulo*180/pi))+'°', False, (0, 0, 0))
+	tevelosidat = font.render(str('VELOSIDAT '+str(velosidat)), False, (0, 0, 0))
 	screen.fill(cyan)
 	screen.fill(green, rect=[0,500,800,100])
 	divuja_cannon()
 	divuja_barra()
+	screen.blit(tangulo,(10,10))
+	screen.blit(tevelosidat,(10,40))
 	pygame.display.update()
 	clock.tick(fps)
 	
