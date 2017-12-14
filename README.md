@@ -1,2 +1,2 @@
 # prollectos-de-programassao
-# ¯\\_(ツ)_/¯
+# ¯\\\_(ツ)\_/¯
